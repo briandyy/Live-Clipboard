@@ -1,0 +1,41 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        env:
+          VITE_APP_APIKEY: ${{ secrets.VITE_APP_APIKEY }}
+          VITE_APP_AUTHDOMAIN: ${{ secrets.VITE_APP_AUTHDOMAIN }}
+          VITE_APP_PROJECTID: ${{ secrets.VITE_APP_PROJECTID }}
+          VITE_APP_STORAGEBUCKET: ${{ secrets.VITE_APP_STORAGEBUCKET }}
+          VITE_APP_MESSAGINGSENDERID: ${{ secrets.VITE_APP_MESSAGINGSENDERID }}
+          VITE_APP_APPID: ${{ secrets.VITE_APP_APPID }}
+          VITE_APP_DATABASEURL: ${{ secrets.VITE_APP_DATABASEURL }}
+          VITE_APP_MEASUREMENT_ID: ${{ secrets.VITE_APP_MEASUREMENT_ID }}
+          VITE_APP_EMAILJSAPIKEY: ${{ secrets.VITE_APP_EMAILJSAPIKEY }}
+          VITE_APP_EMAILJSSERVICE_KEY: ${{ secrets.VITE_APP_EMAILJSSERVICE_KEY }}
+          VITE_APP_EMAILJSTEMPLATE_KEY: ${{ secrets.VITE_APP_EMAILJSTEMPLATE_KEY }}
+          VITE_APP_CLOUDINARY_CLOUD_NAME: ${{ secrets.VITE_APP_CLOUDINARY_CLOUD_NAME }}
+          VITE_APP_CLOUDINARY_CLOUD_UPLOAD_PRESET_NAME: ${{ secrets.VITE_APP_CLOUDINARY_CLOUD_UPLOAD_PRESET_NAME }}
+        run: npm run build
+
+      - name: Deploy
+        run: npm run deploy
